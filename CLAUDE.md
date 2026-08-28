@@ -3,7 +3,11 @@
 作業ドライブは`F:\open-runo`。この節は[`open-raid-z`](https://github.com/aon-co-jp/open-raid-z)の
 `CLAUDE.md`を正本とし、各プロジェクトへコピーして同期する方針に準じる。
 GitHubリポジトリ: [aon-co-jp/e-gov](https://github.com/aon-co-jp/e-gov)。
-本番想定デプロイ先: VPS `/root/e-gov.info`。
+本番想定デプロイ先: VPS `/root/repository/e-gov.info`(2026-08-28、VPS
+ディレクトリ構成整理によりリポジトリは`/root/repository/`配下へ移動。
+ドメイン名でもあるため`/root/url/e-gov.info`にもシンボリックリンクを
+併設。旧パス`/root/e-gov.info`もシンボリックリンクとして残しており、
+systemdサービス等既存の参照はそのまま機能する)。
 
 > ⚠️ **正直な開示**: 本ドキュメントはユーザーからの口頭構想と、Web検索による
 > エストニア(e-Estonia/X-Road)・アゼルバイジャン(ASAN xidmet)の事例調査を
