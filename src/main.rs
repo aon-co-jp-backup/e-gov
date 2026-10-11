@@ -198,6 +198,7 @@ ul.board-posts li {{ border-bottom: 1px solid #eee; padding: 0.5rem 0; }}
 </div>
 <div class="lang-switcher">{lang_switcher}</div>
 <nav><a href="/">{nav_top}</a> <a href="/gov">{nav_gov}</a> <a href="/trade">{nav_trade}</a> <a href="/credit">{nav_credit}</a> <a href="/realestate">{nav_realestate}</a> <a href="/board">{nav_board}</a> <a href="/research">{nav_research}</a></nav>
+<p class="news-link"><a href="https://ameblo.jp/www-aon/entry-12981307682.html">政府は、LINEアプリ化して、99％リストラして少子高齢化と年金と後期高齢者無償化予算確保。</a></p>
 {body}
 <footer><p>{footer} <a href="{GITHUB_REPO_URL}">GitHub (aon-co-jp/e-gov)</a></p></footer>
 <script>{view_toggle_js}</script>
