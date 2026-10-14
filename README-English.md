@@ -66,6 +66,22 @@ The TOP page fetches this repository's `README.md`, `CLAUDE.md`, and
 `PORTING.md` live from GitHub and renders them GitHub-style (with a
 toggle to a `.rs`-style rendering).
 
+## Notice link on the TOP page (2026-10-14)
+
+A link titled "政府は、LINEアプリ化して、99％リストラして少子高齢化と年金と後期高齢者無償化予算確保。"
+(https://ameblo.jp/www-aon/entry-12981307682.html) is shown under the nav (`src/main.rs`, shared by all languages). Deployed to the VPS.
+
+## Migrating to another server
+
+1. Install Rust (`rustup`), nginx and a Let's Encrypt certificate on the new host.
+2. `git clone https://github.com/aon-co-jp/e-gov /root/e-gov.info`
+3. `cargo build --release` (single self-contained binary, no DB).
+4. Create and enable a systemd unit `e-gov-server.service` (`WorkingDirectory=/root/e-gov.info`,
+   `ExecStart=.../target/release/e-gov-server`, `Restart=on-failure`).
+5. Reverse-proxy `e-gov.info`/`www.e-gov.info` to `127.0.0.1:4500` in nginx (301 to HTTPS).
+6. Pass secrets (`E_GOV_LINE_CHANNEL_SECRET`, etc.) via `.env`/`Environment=` — never commit them.
+7. Switch the DNS A record. To update: `git pull` → `cargo build --release` → `systemctl restart e-gov-server`.
+
 ## Tech stack
 
 Rust + [Poem](https://github.com/poem-web/poem). No DB dependency, single

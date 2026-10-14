@@ -61,6 +61,22 @@ TOPページは、このリポジトリの`README.md`・`CLAUDE.md`・`PORTING.m
 GitHubから自動取得し、GitHub風にレンダリングして表示します
 (`.rs`形式への変換表示も切替可能)。
 
+## TOPページのお知らせリンク(2026-10-14)
+
+ナビ直下に「政府は、LINEアプリ化して、99％リストラして少子高齢化と年金と後期高齢者無償化予算確保。」
+(https://ameblo.jp/www-aon/entry-12981307682.html)へのリンクを表示(`src/main.rs`、全言語共通)。VPS反映済み。
+
+## お引越し(別サーバーへの移設)
+
+1. 新サーバーにRust(`rustup`)・nginx・Let's Encrypt証明書を用意する。
+2. `git clone https://github.com/aon-co-jp/e-gov /root/e-gov.info`
+3. `cargo build --release`(1バイナリ完結・DB不要)。
+4. systemd `e-gov-server.service`(`WorkingDirectory=/root/e-gov.info`、
+   `ExecStart=.../target/release/e-gov-server`、`Restart=on-failure`)を作成し有効化。
+5. nginxで`e-gov.info`/`www.e-gov.info`を`127.0.0.1:4500`へリバースプロキシ(HTTPSへ301)。
+6. 秘密情報(`E_GOV_LINE_CHANNEL_SECRET`等)は`.env`/`Environment=`で渡す(コミット禁止)。
+7. DNSのAレコードを新サーバーへ切替。更新時は`git pull`→`cargo build --release`→`systemctl restart e-gov-server`。
+
 ## 技術スタック
 
 Rust + [Poem](https://github.com/poem-web/poem)。DB非依存・1バイナリ完結。

@@ -51,3 +51,28 @@
 - 秘密情報(チャネルシークレット・アクセストークン等)は`.env`
   (`.gitignore`対象)またはVPSのsystemd `Environment=`経由で渡すこと。
   コードやコミット履歴に直接書き込まないこと。
+
+## 6. お引越し(別サーバーへの移設)
+
+1. 新サーバーにRust(`rustup`)・nginx・Let's Encrypt証明書を用意する。
+2. `git clone https://github.com/aon-co-jp/e-gov /root/e-gov.info`
+3. `cargo build --release`(1バイナリ完結・DB不要)。
+4. systemd `e-gov-server.service`(`WorkingDirectory=/root/e-gov.info`、
+   `ExecStart=.../target/release/e-gov-server`、`Restart=on-failure`)を作成し有効化。
+5. nginxで`e-gov.info`/`www.e-gov.info`を`127.0.0.1:4500`へリバースプロキシ(HTTPSへ301)。
+6. 秘密情報(`E_GOV_LINE_CHANNEL_SECRET`等)は`.env`/`Environment=`で渡す(コミット禁止)。
+7. DNSのAレコードを新サーバーへ切替。更新時は`git pull`→`cargo build --release`→`systemctl restart e-gov-server`。
+
+---
+
+## 6. Migrating to another server
+
+1. Install Rust (`rustup`), nginx and a Let's Encrypt certificate on the new host.
+2. `git clone https://github.com/aon-co-jp/e-gov /root/e-gov.info`
+3. `cargo build --release` (single self-contained binary, no DB).
+4. Create and enable a systemd unit `e-gov-server.service` (`WorkingDirectory=/root/e-gov.info`,
+   `ExecStart=.../target/release/e-gov-server`, `Restart=on-failure`).
+5. Reverse-proxy `e-gov.info`/`www.e-gov.info` to `127.0.0.1:4500` in nginx (301 to HTTPS).
+6. Pass secrets (`E_GOV_LINE_CHANNEL_SECRET`, etc.) via `.env`/`Environment=` — never commit them.
+7. Switch the DNS A record. To update: `git pull` → `cargo build --release` → `systemctl restart e-gov-server`.
+

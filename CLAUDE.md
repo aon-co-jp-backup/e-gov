@@ -280,6 +280,13 @@ research)は13言語共通で簡潔な要約文に統一しており、日本語
 
 ## HANDOFF
 
+- **2026-10-14 TOPにameblo記事リンク追加・お引越し手順を整備**: `src/main.rs`のナビ直下に
+  記事リンク(https://ameblo.jp/www-aon/entry-12981307682.html)を追加、GitHub push・VPS(`/root/e-gov.info`、
+  `e-gov-server.service`、nginx→127.0.0.1:4500)へ反映しブラウザで表示確認済み。移設手順は`PORTING.md`・READMEの
+  「お引越し」節。ローカルcloneは`F:\e-gov`。
+  (EN) Added the ameblo article link under the TOP nav, pushed and deployed to the VPS, verified in the browser.
+  Migration steps are in `PORTING.md` / README ("Migrating to another server"). Local clone: `F:\e-gov`.
+
 - **2026-07-22 `chat_commerce.rs`を`aruaru-llm`へのHTTP問い合わせに置き換え**:
   `aruaru-llm`側CLAUDE.mdの2026-07-20 HANDOFFで「未着手」として記録されて
   いた「`e-gov.info`側を実際に`aruaru-llm`へのHTTP問い合わせに置き換える
