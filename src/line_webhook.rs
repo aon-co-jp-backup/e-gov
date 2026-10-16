@@ -180,7 +180,7 @@ pub async fn line_webhook(req: &Request, body: Body) -> Response {
             .body("invalid signature");
     }
 
-    match serde_json::from_slice::<WebhookPayload>(&bytes) {
+    match sonic_rs::from_slice::<WebhookPayload>(&bytes) {
         Ok(payload) => {
             tracing::info!("LINE webhook received {} event(s)", payload.events.len());
             for event in &payload.events {
