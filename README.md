@@ -92,4 +92,4 @@ Rust + [Poem](https://github.com/poem-web/poem)。DB非依存・1バイナリ完
 
 ---
 
-作者 / Author: 石塚正浩（MASAHIRO ISHIZUKA） (https://github.com/aon-co-jp)
+作者 / Author: 石 塚 正 浩（MASAHIRO ISHIZUKA） (https://github.com/aon-co-jp)
