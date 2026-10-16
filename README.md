@@ -89,3 +89,7 @@ Rust + [Poem](https://github.com/poem-web/poem)。DB非依存・1バイナリ完
 - [open-raid-z](https://github.com/aon-co-jp/open-raid-z) — 開発ルールの正本
 - [aruaru-db](https://github.com/aon-co-jp/aruaru-db) — 将来のDB接続候補
 - [aruaru-tokyo](https://github.com/aon-co-jp/aruaru-tokyo-server) / [karu.tokyo](https://github.com/aon-co-jp/karu.tokyo) — 同じ技術スタックの姉妹サイト
+
+---
+
+作者 / Author: 石塚正浩（MASAHIRO ISHIZUKA） (https://github.com/aon-co-jp)
