@@ -43,7 +43,7 @@ struct AruaruLlmChatResponse {
 /// でログを残す)。
 async fn try_llm_reply(user_text: &str) -> Option<String> {
     let base = std::env::var("E_GOV_ARUARU_LLM_URL").unwrap_or_else(|_| DEFAULT_ARUARU_LLM_URL.to_string());
-    let url = format!("{base}/v1/chat");
+    let url = format!("{base}/aruaru_llm.v1.Llm/Chat");
 
     let client = match reqwest::Client::builder().timeout(std::time::Duration::from_secs(3)).build() {
         Ok(c) => c,
