@@ -30,7 +30,7 @@ mod research;
 
 use i18n::Lang;
 use poem::listener::TcpListener;
-use poem::web::{Form, Html, Query};
+use poem::web::{Html, Query};
 use poem::{get, handler, post, Route, Server};
 use serde::Deserialize;
 
@@ -334,7 +334,7 @@ fn render_board_section(lang: Lang, category: board::Category, heading: &str, s:
     format!(
         r#"<h2>{heading}</h2>
 {posts_html}
-<form class="board-form" method="post" action="/board/post">
+<form class="board-form" onsubmit="return boardSubmit(this)">
 <input type="hidden" name="category" value="{category_value}">
 <input type="hidden" name="lang" value="{lang_code}">
 <label>{name_label}</label>
@@ -344,7 +344,17 @@ fn render_board_section(lang: Lang, category: board::Category, heading: &str, s:
 <label>{link_label}</label>
 <input type="url" name="meet_link" maxlength="300">
 <button type="submit">{submit_label}</button>
-</form>"#,
+</form>
+<script>
+function boardSubmit(f) {{
+  var d = {{}};
+  new FormData(f).forEach(function (v, k) {{ d[k] = v; }});
+  fetch("/e_gov.v1.Board/AddPost", {{ method: "POST", headers: {{ "content-type": "application/json" }}, body: JSON.stringify(d) }})
+    .then(function (r) {{ return r.json().then(function (j) {{ if (!r.ok) {{ alert(j.message || "error"); }} else {{ location.href = "/board?lang=" + encodeURIComponent(d.lang || ""); }} }}); }})
+    .catch(function () {{ alert("network error"); }});
+  return false;
+}}
+</script>"#,
         lang_code = lang.code(),
         name_label = s.name_label,
         message_label = s.message_label,
@@ -380,14 +390,33 @@ fn board_page(Query(q): Query<LangQuery>) -> Html<String> {
     Html(page_shell(lang, "/board", t.title, &body))
 }
 
-#[handler]
-fn board_post(Form(form): Form<board::NewPostForm>) -> poem::Response {
-    let _ = board::add_post(&form);
-    let lang = Lang::parse(if form.lang.is_empty() { None } else { Some(form.lang.as_str()) });
+fn connect_error(status: poem::http::StatusCode, code: &str, message: &str) -> poem::Response {
     poem::Response::builder()
-        .status(poem::http::StatusCode::SEE_OTHER)
-        .header("Location", format!("/board?lang={}", lang.code()))
-        .body(())
+        .status(status)
+        .content_type("application/json")
+        .body(serde_json::json!({ "code": code, "message": message }).to_string())
+}
+
+/// 掲示板への投稿(Connectの単純呼び出し: `POST /e_gov.v1.Board/AddPost`、本文はJSON)。
+/// 本文はRS-JSONの上限(16KiB・深さ・重複キー拒否)つきで読む。
+#[handler]
+async fn board_add_post(body: poem::Body) -> poem::Response {
+    use poem::http::StatusCode;
+    let bytes = match body.into_bytes().await {
+        Ok(b) if b.len() <= 16 * 1024 => b,
+        _ => return connect_error(StatusCode::BAD_REQUEST, "invalid_argument", "body too large or unreadable"),
+    };
+    let Ok(text) = std::str::from_utf8(&bytes) else {
+        return connect_error(StatusCode::BAD_REQUEST, "invalid_argument", "body must be UTF-8 JSON");
+    };
+    let form: board::NewPostForm = match rust_json::from_str_secure(text, &rust_json::Limits { max_bytes: 16 * 1024, ..Default::default() }) {
+        Ok(f) => f,
+        Err(_) => return connect_error(StatusCode::BAD_REQUEST, "invalid_argument", "invalid JSON body"),
+    };
+    match board::add_post(&form) {
+        Ok(()) => poem::Response::builder().content_type("application/json").body("{}"),
+        Err(e) => connect_error(StatusCode::BAD_REQUEST, "invalid_argument", e),
+    }
 }
 
 #[handler]
@@ -417,7 +446,7 @@ async fn main() -> Result<(), std::io::Error> {
         .at("/realestate", get(realestate))
         .at("/research", get(research_page))
         .at("/board", get(board_page))
-        .at("/board/post", post(board_post))
+        .at("/e_gov.v1.Board/AddPost", post(board_add_post))
         .at("/webhook/line", post(line_webhook::line_webhook))
         .at("/healthz", get(healthz));
 

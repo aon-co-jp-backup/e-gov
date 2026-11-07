@@ -13,6 +13,7 @@ poem = "3.1"
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+rust-json = { git = "https://github.com/aon-co-jp/RS-JSON" }
 tracing = "0.1"
 tracing-subscriber = "0.3"
 reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
