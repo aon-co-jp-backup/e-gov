@@ -14,7 +14,7 @@
 //! 送受信」のみを想定し、認証済アカウント固有の機能(リッチメニューの
 //! 高度な設定等)には触れない。
 
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use poem::http::StatusCode;
 use poem::{handler, Body, Request, Response};
 use serde::Deserialize;
